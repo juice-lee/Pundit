@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Log</title>
+</head>
+
+<body>
+	<article> 
+		<h1> Psuedo-Code / Algorithm </h1> 
+			<ol>
+				<li> Get relevant articles. 
+				<li> Parse article for words. 
+				<li> Check stock prices at time of article publication and at all time intervals measured (if the time hasn't happened yet, schedule the task to happen later)
+				<li> Update DB 
+			</ol> 
+
+			<code><pre>
+				UpdateDB(string company){
+					timesWeCareAbout = {5 minutes, 30 minutes, 1 hour, 3 hours, ...}
+					list articles = getArticles(company) //assuming this only returns new, unscanned articles
+
+					for each article in articles {
+						float[] stockPrices;  // same size as timesWeCareAbout
+						getPublicationDate();
+						int startPoint = 0; 
+
+						if(getPublicationTime() == null)
+							startPoint = 5; 
+
+						for( ; startpoint < stockPrices.size(); i++)
+							stockPrices[i] = GetStockPrice(company, timesWeCareAbout[i])
+
+						article.getMeaningfulWords(article);
+
+						//insert both raw and %change into a DB
+
+					}
+				}	
+
+			</pre></code>
+
+			<h2> Database Basic Schema </h2>
+			<ul>
+				<li> Built using MySQL but could be any of the other versions (idk if we want to go NoSQL or use a hashtable maybe or some other data struct)
+				<li> I have a "words" Table. Has these columns: Word, Company, time1_raw, time1_percent, time1_n,..., timeN_raw, timeN_percent, timeN_n
+				<li> If it is not clear, the raw/% fields store the sum and the N stores the number of articles the word appeared in, so we can calculate the average at anytime and continually add things to the db. 
+				<li> Primary Key is word, company
+				<li> CONS of this DB approach: Limiting scope to just word, company, and time. We close ourself off from further statistcal analsysis and merely look to see how this word affects the stock price for a given company. Who knows, maybe there is a strong correlation if the word appers on Tuesdays compared the word appearing on Fridays. If we store everything with something like MongoDB and use Hadoop, maybe we can just do big data analysis. 
+			</ul>
+	</article> 
+	<article>
+		<h1> Fucntions to Implement </h1>
+			<ul> 
+				<li> double getStockPrice(string company, string timestamp)
+				<li> string[] getMeaningfulWords(string articleUrl)
+				<li> getArticles
+				<li> getEffectOfWord(string word)
+				<li> getEffectOfWord(string word, string company) // OVERLOAD
+			</ul>
+
+	<article>
+		<h1> Issues </h1> 
+		<ul> 
+			<li> How to get stock data?
+				<br /> <strong> ANSWER: Yahoo Finance API </strong>
+			<li> How to get the articles? 
+				<br /> <strong> ANSWER.a: Google Alerts RSS Feeds to get new articles in realtime </strong> 
+				<br /> <strong> ANSWER.b: Use Google to find list of articles from the past </strong> 
+			<li> What if timestamp or date not available?
+				<br /> <strong> ANSWER: Do not use if date unavailable. If timestamp unvailable, all calculations have error bars of +/- 1 day and change in stock price cannot be measured unless the time elapsed is at least >3 days (imo). </strong>
+			<li> How do you only get the meaningful text from an article? (ignore sidebar, comments, related posts, etc)
+				<br /> ANSWER: Well shiiii. You can ignore content in header footer tags, if it's properly formatted. Search for the article/section tag that wraps around the title of the article. You get the title from most RSS feeds, so you can always find the title of the article in the page itself. The title should be next to the content, unless the website has some set positioning CSS for the title and the title appears below content in the html -- not that likely. Figure it out later. 
+			<li> How to ignore irrelevant articles? (Example: Amazon river instead of Amazon.com)
+				<br /> <strong> Figure it out later </strong> 
+			<li> How to deal with language constructs such as negatives? (Example: Amazon is not downsizing)
+				<br /> <strong> Does the NLP do this for us? Writing code that can flawlessly do this would require so many rules and things to look for (not viable). </strong> 
+			<li> How do you deal with words that depend on each other? (Example: "Layoff" and "restructuring" both negatively impact a stock rating when they're viewed independantly, but when they're together it has a positive impact. )
+				<br /> <strong> Are theere statistical techniques for this? </strong> 
+		</ul>
+	</article>
+
+
+
+
+</body>
+
+</html>
