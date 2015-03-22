@@ -29,7 +29,7 @@
 						if(getPublicationTime() == null)
 							startPoint = 5; // this is to skip over time intervals too small if we don't have the time stamp
 
-						for( int i=starpoint;; ; i < stockPrices.length; i++)
+						for( int i=starpoint; i < stockPrices.length; i++)
 							stockPrices[i] = GetStockPrice(company, timesWeCareAbout[i])
 
 						article.getMeaningfulWords(article);
